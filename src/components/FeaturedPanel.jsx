@@ -5,7 +5,7 @@ function FeaturedPanel({ selectedRecipes, onRemove, onPublish, isLoading }) {
   return (
     <div className="featured-panel">
       <div className="featured-header">
-        <h2>Recetas Destacadas</h2>
+        <h2>Featured Recipes</h2>
         <span className="count-badge">
           {selectedRecipes.length} / 3
         </span>
@@ -13,7 +13,7 @@ function FeaturedPanel({ selectedRecipes, onRemove, onPublish, isLoading }) {
 
       {selectedRecipes.length === 0 ? (
         <div className="empty-featured">
-          <p>Selecciona 3 recetas de los resultados de búsqueda</p>
+          <p>Select 3 recipes from the search results</p>
         </div>
       ) : (
         <div className="featured-list">
@@ -34,7 +34,7 @@ function FeaturedPanel({ selectedRecipes, onRemove, onPublish, isLoading }) {
               <button
                 className="remove-button"
                 onClick={() => onRemove(recipe.id)}
-                title="Quitar"
+                title="Remove"
               >
                 ✕
               </button>
@@ -48,12 +48,12 @@ function FeaturedPanel({ selectedRecipes, onRemove, onPublish, isLoading }) {
         onClick={onPublish}
         disabled={selectedRecipes.length !== 3 || isLoading}
       >
-        {isLoading ? 'Publicando...' : 'Publicar en la App'}
+        {isLoading ? 'Publishing...' : 'Publish to App'}
       </button>
 
       {selectedRecipes.length < 3 && selectedRecipes.length > 0 && (
         <p className="hint">
-          Selecciona {3 - selectedRecipes.length} receta{3 - selectedRecipes.length > 1 ? 's' : ''} más
+          Select {3 - selectedRecipes.length} more recipe{3 - selectedRecipes.length > 1 ? 's' : ''}
         </p>
       )}
     </div>

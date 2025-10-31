@@ -38,7 +38,7 @@ function App() {
       );
 
       if (!response.ok) {
-        throw new Error('Error al buscar recetas');
+        throw new Error('Error searching recipes');
       }
 
       const data = await response.json();
@@ -59,15 +59,15 @@ function App() {
       // Si no está y hay espacio, la agregamos
       setSelectedRecipes([...selectedRecipes, recipe]);
     } else {
-      // Si ya hay 3, mostramos un error
-      setError('Solo puedes seleccionar 3 recetas');
+      // If already 3, show error
+      setError('You can only select 3 recipes');
       setTimeout(() => setError(null), 3000);
     }
   };
 
   const handlePublish = async () => {
     if (selectedRecipes.length !== 3) {
-      setError('Debes seleccionar exactamente 3 recetas');
+      setError('You must select exactly 3 recipes');
       setTimeout(() => setError(null), 3000);
       return;
     }
@@ -86,11 +86,11 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al publicar recetas');
+        throw new Error('Error publishing recipes');
       }
 
       const data = await response.json();
-      setSuccessMessage('¡Recetas publicadas exitosamente! La app se actualizará en unos minutos.');
+      setSuccessMessage('Recipes published successfully! The app will update in a few minutes.');
 
       // Limpiar mensaje después de 5 segundos
       setTimeout(() => setSuccessMessage(null), 5000);
@@ -105,7 +105,7 @@ function App() {
     <div className="app">
       <header className="app-header">
         <h1>🌱 VeganMaps Featured Recipes</h1>
-        <p>Busca y selecciona 3 recetas para destacar en la app</p>
+        <p>Search and select 3 recipes to feature in the app</p>
       </header>
 
       <main className="app-main">
@@ -127,7 +127,7 @@ function App() {
           {isLoading && (
             <div className="loading">
               <div className="spinner"></div>
-              <p>Buscando recetas...</p>
+              <p>Searching recipes...</p>
             </div>
           )}
 
@@ -141,7 +141,7 @@ function App() {
 
           {!isLoading && searchResults.length === 0 && !error && (
             <div className="empty-state">
-              <p>Busca recetas veganas para comenzar</p>
+              <p>Search for vegan recipes to get started</p>
             </div>
           )}
         </div>

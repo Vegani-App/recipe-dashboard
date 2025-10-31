@@ -15,7 +15,7 @@ function RecipeCard({ recipe, isSelected, onSelect }) {
         />
         {isSelected && (
           <div className="selected-badge">
-            ✓ Seleccionada
+            ✓ Selected
           </div>
         )}
       </div>
@@ -29,7 +29,7 @@ function RecipeCard({ recipe, isSelected, onSelect }) {
           )}
           {recipe.servings && (
             <span className="meta-item">
-              👥 {recipe.servings} porciones
+              👥 {recipe.servings} servings
             </span>
           )}
         </div>

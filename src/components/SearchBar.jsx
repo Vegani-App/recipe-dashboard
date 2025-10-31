@@ -15,7 +15,7 @@ function SearchBar({ onSearch, isLoading }) {
     <form className="search-bar" onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Buscar recetas veganas... (ej: tacos, pasta, curry)"
+        placeholder="Search vegan recipes... (e.g., tacos, pasta, curry)"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         disabled={isLoading}
@@ -26,7 +26,7 @@ function SearchBar({ onSearch, isLoading }) {
         disabled={isLoading || !query.trim()}
         className="search-button"
       >
-        {isLoading ? 'Buscando...' : 'Buscar'}
+        {isLoading ? 'Searching...' : 'Search'}
       </button>
     </form>
   );
