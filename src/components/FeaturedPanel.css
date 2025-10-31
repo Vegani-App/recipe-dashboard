@@ -25,7 +25,7 @@
 }
 
 .count-badge {
-  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+  background: #95a5a6;
   color: white;
   padding: 6px 14px;
   border-radius: 20px;
@@ -70,7 +70,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: #56ab2f;
+  background: #95a5a6;
   color: white;
   border-radius: 50%;
   font-weight: 700;
@@ -133,7 +133,7 @@
   padding: 16px;
   font-size: 1.1rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+  background: #95a5a6;
   color: white;
   border: none;
   border-radius: 8px;
@@ -143,8 +143,9 @@
 }
 
 .publish-button:hover:not(:disabled) {
+  background: #7f8c8d;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
+  box-shadow: 0 6px 20px rgba(127, 140, 141, 0.3);
 }
 
 .publish-button:disabled {
