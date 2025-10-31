@@ -5,15 +5,19 @@ import FeaturedPanel from './components/FeaturedPanel';
 import './App.css';
 
 function App() {
-  const [searchResults, setSearchResults] = useState([]);
+  const [allRecipes, setAllRecipes] = useState([]); // Todas las recetas cargadas
+  const [filteredRecipes, setFilteredRecipes] = useState([]); // Recetas filtradas por búsqueda
   const [selectedRecipes, setSelectedRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 30;
 
-  // Cargar las recetas featured actuales al iniciar
+  // Cargar recetas al iniciar
   useEffect(() => {
     loadCurrentFeatured();
+    loadInitialRecipes();
   }, []);
 
   const loadCurrentFeatured = async () => {
@@ -28,27 +32,45 @@ function App() {
     }
   };
 
-  const handleSearch = async (query) => {
+  const loadInitialRecipes = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
+      // Spoonacular permite máximo 100 resultados por request
       const response = await fetch(
-        `/.netlify/functions/search-recipes?query=${encodeURIComponent(query)}&number=20`
+        '/.netlify/functions/search-recipes?query=vegan&number=100'
       );
 
       if (!response.ok) {
-        throw new Error('Error searching recipes');
+        throw new Error('Error loading recipes');
       }
 
       const data = await response.json();
-      setSearchResults(data.results || []);
+      setAllRecipes(data.results || []);
+      setFilteredRecipes(data.results || []);
     } catch (err) {
       setError(err.message);
-      setSearchResults([]);
+      setAllRecipes([]);
+      setFilteredRecipes([]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = (query) => {
+    // Filtrar localmente sin llamar a la API
+    if (!query.trim()) {
+      setFilteredRecipes(allRecipes);
+      setCurrentPage(1);
+      return;
+    }
+
+    const filtered = allRecipes.filter(recipe =>
+      recipe.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredRecipes(filtered);
+    setCurrentPage(1);
   };
 
   const handleSelectRecipe = (recipe) => {
@@ -127,21 +149,53 @@ function App() {
           {isLoading && (
             <div className="loading">
               <div className="spinner"></div>
-              <p>Searching recipes...</p>
+              <p>Loading recipes...</p>
             </div>
           )}
 
-          {!isLoading && searchResults.length > 0 && (
-            <RecipeGrid
-              recipes={searchResults}
-              selectedRecipes={selectedRecipes}
-              onSelectRecipe={handleSelectRecipe}
-            />
+          {!isLoading && filteredRecipes.length > 0 && (
+            <>
+              <div className="recipes-count">
+                Showing {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}
+              </div>
+              <RecipeGrid
+                recipes={filteredRecipes.slice((currentPage - 1) * recipesPerPage, currentPage * recipesPerPage)}
+                selectedRecipes={selectedRecipes}
+                onSelectRecipe={handleSelectRecipe}
+              />
+              {filteredRecipes.length > recipesPerPage && (
+                <div className="pagination">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="pagination-button"
+                  >
+                    ← Previous
+                  </button>
+                  <span className="pagination-info">
+                    Page {currentPage} of {Math.ceil(filteredRecipes.length / recipesPerPage)}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(Math.ceil(filteredRecipes.length / recipesPerPage), prev + 1))}
+                    disabled={currentPage >= Math.ceil(filteredRecipes.length / recipesPerPage)}
+                    className="pagination-button"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
-          {!isLoading && searchResults.length === 0 && !error && (
+          {!isLoading && filteredRecipes.length === 0 && allRecipes.length > 0 && (
             <div className="empty-state">
-              <p>Search for vegan recipes to get started</p>
+              <p>No recipes found. Try a different search term.</p>
+            </div>
+          )}
+
+          {!isLoading && allRecipes.length === 0 && !error && (
+            <div className="empty-state">
+              <p>No recipes loaded yet.</p>
             </div>
           )}
         </div>

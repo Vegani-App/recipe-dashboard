@@ -4,30 +4,38 @@ import './SearchBar.css';
 function SearchBar({ onSearch, isLoading }) {
   const [query, setQuery] = useState('');
 
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    onSearch(value); // Filtrar en tiempo real
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.trim() && !isLoading) {
-      onSearch(query.trim());
-    }
   };
 
   return (
     <form className="search-bar" onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Search vegan recipes... (e.g., tacos, pasta, curry)"
+        placeholder="Filter recipes by name... (e.g., tacos, pasta, curry)"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={handleChange}
         disabled={isLoading}
         className="search-input"
       />
-      <button
-        type="submit"
-        disabled={isLoading || !query.trim()}
-        className="search-button"
-      >
-        {isLoading ? 'Searching...' : 'Search'}
-      </button>
+      {query && (
+        <button
+          type="button"
+          onClick={() => {
+            setQuery('');
+            onSearch('');
+          }}
+          className="clear-button"
+        >
+          ✕
+        </button>
+      )}
     </form>
   );
 }
