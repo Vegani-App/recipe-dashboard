@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import netlifyIdentity from 'netlify-identity-widget';
 import SearchBar from './components/SearchBar';
 import RecipeGrid from './components/RecipeGrid';
 import FeaturedPanel from './components/FeaturedPanel';
+import Login from './components/Login';
 import './App.css';
 
 function App() {
+  const [user, setUser] = useState(null);
   const [allRecipes, setAllRecipes] = useState([]); // Todas las recetas cargadas
   const [filteredRecipes, setFilteredRecipes] = useState([]); // Recetas filtradas por búsqueda
   const [selectedRecipes, setSelectedRecipes] = useState([]);
@@ -14,11 +17,13 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const recipesPerPage = 30;
 
-  // Cargar recetas al iniciar
+  // Cargar recetas al iniciar (solo si está autenticado)
   useEffect(() => {
-    loadCurrentFeatured();
-    loadInitialRecipes();
-  }, []);
+    if (user) {
+      loadCurrentFeatured();
+      loadInitialRecipes();
+    }
+  }, [user]);
 
   const loadCurrentFeatured = async () => {
     try {
@@ -115,10 +120,14 @@ function App() {
     setSuccessMessage(null);
 
     try {
+      // Get JWT token from Netlify Identity
+      const token = user?.token?.access_token;
+
       const response = await fetch('/.netlify/functions/save-featured', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(selectedRecipes),
       });
@@ -139,11 +148,30 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    netlifyIdentity.logout();
+  };
+
+  // Show login screen if not authenticated
+  if (!user) {
+    return <Login onLogin={setUser} />;
+  }
+
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🌱 VeganMaps Featured Recipes</h1>
-        <p>Search and select 3 recipes to feature in the app</p>
+        <div className="header-content">
+          <div>
+            <h1>🌱 VeganMaps Featured Recipes</h1>
+            <p>Search and select 3 recipes to feature in the app</p>
+          </div>
+          <div className="user-info">
+            <span className="user-email">{user.email}</span>
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+          </div>
+        </div>
       </header>
 
       <main className="app-main">

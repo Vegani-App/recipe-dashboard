@@ -1,5 +1,6 @@
 // Función para guardar las 3 recetas featured en Netlify Blobs
 // Endpoint: /.netlify/functions/save-featured (POST)
+// Requiere autenticación con Netlify Identity
 
 import { getStore } from '@netlify/blobs';
 
@@ -8,6 +9,15 @@ export default async (req, context) => {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Verificar autenticación
+  const { user } = context.clientContext || {};
+  if (!user) {
+    return new Response(JSON.stringify({ error: 'Unauthorized - Login required' }), {
+      status: 401,
       headers: { 'Content-Type': 'application/json' }
     });
   }
