@@ -14,8 +14,12 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Leer de Netlify Blobs
-    const store = getStore('featured-recipes');
+    // Leer de Netlify Blobs con credenciales explícitas
+    const store = getStore('featured-recipes', {
+      siteID: process.env.NETLIFY_SITE_ID,
+      token: process.env.NETLIFY_TOKEN
+    });
+
     const data = await store.get('current');
 
     if (!data) {

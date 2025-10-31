@@ -35,8 +35,12 @@ exports.handler = async (event) => {
       }
     }
 
-    // Guardar en Netlify Blobs
-    const store = getStore('featured-recipes');
+    // Guardar en Netlify Blobs con credenciales explícitas
+    const store = getStore('featured-recipes', {
+      siteID: process.env.NETLIFY_SITE_ID,
+      token: process.env.NETLIFY_TOKEN
+    });
+
     await store.set('current', JSON.stringify({
       recipes,
       updatedAt: new Date().toISOString()
