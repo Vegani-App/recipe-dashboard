@@ -1,47 +1,50 @@
 // Función para buscar recetas en Spoonacular API
 // Endpoint: /.netlify/functions/search-recipes?query=tacos&number=20
 
-exports.handler = async (event) => {
+export default async (req, context) => {
   // Solo permitir GET requests
-  if (event.httpMethod !== 'GET') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' })
-    };
+  if (req.method !== 'GET') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  const { query = '', number = 20, offset = 0 } = event.queryStringParameters || {};
+  const url = new URL(req.url);
+  const query = url.searchParams.get('query') || '';
+  const number = url.searchParams.get('number') || '20';
+  const offset = url.searchParams.get('offset') || '0';
 
   // Validar que hay una query
   if (!query) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Query parameter is required' })
-    };
+    return new Response(JSON.stringify({ error: 'Query parameter is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   // API key de Spoonacular desde variables de entorno
   const apiKey = process.env.SPOONACULAR_API_KEY;
 
   if (!apiKey) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'API key not configured' })
-    };
+    return new Response(JSON.stringify({ error: 'API key not configured' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   try {
     // Llamar a Spoonacular API
-    const url = new URL('https://api.spoonacular.com/recipes/complexSearch');
-    url.searchParams.append('query', query);
-    url.searchParams.append('number', number);
-    url.searchParams.append('offset', offset);
-    url.searchParams.append('diet', 'vegan');
-    url.searchParams.append('addRecipeInformation', 'true');
-    url.searchParams.append('fillIngredients', 'true');
-    url.searchParams.append('apiKey', apiKey);
+    const apiUrl = new URL('https://api.spoonacular.com/recipes/complexSearch');
+    apiUrl.searchParams.append('query', query);
+    apiUrl.searchParams.append('number', number);
+    apiUrl.searchParams.append('offset', offset);
+    apiUrl.searchParams.append('diet', 'vegan');
+    apiUrl.searchParams.append('addRecipeInformation', 'true');
+    apiUrl.searchParams.append('fillIngredients', 'true');
+    apiUrl.searchParams.append('apiKey', apiKey);
 
-    const response = await fetch(url.toString());
+    const response = await fetch(apiUrl.toString());
 
     if (!response.ok) {
       throw new Error(`Spoonacular API error: ${response.status}`);
@@ -49,22 +52,21 @@ exports.handler = async (event) => {
 
     const data = await response.json();
 
-    return {
-      statusCode: 200,
+    return new Response(JSON.stringify(data), {
+      status: 200,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify(data)
-    };
+      }
+    });
   } catch (error) {
     console.error('Error calling Spoonacular API:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: 'Failed to fetch recipes',
-        message: error.message
-      })
-    };
+    return new Response(JSON.stringify({
+      error: 'Failed to fetch recipes',
+      message: error.message
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };
