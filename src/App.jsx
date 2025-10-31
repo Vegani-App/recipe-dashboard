@@ -38,17 +38,33 @@ function App() {
 
     try {
       // Spoonacular permite máximo 100 resultados por request
-      const response = await fetch(
-        '/.netlify/functions/search-recipes?query=vegan&number=100'
-      );
+      // Hacemos 3 requests para obtener 300 recetas
+      const requests = [
+        fetch('/.netlify/functions/search-recipes?query=vegan&number=100&offset=0'),
+        fetch('/.netlify/functions/search-recipes?query=vegan&number=100&offset=100'),
+        fetch('/.netlify/functions/search-recipes?query=vegan&number=100&offset=200')
+      ];
 
-      if (!response.ok) {
-        throw new Error('Error loading recipes');
+      const responses = await Promise.all(requests);
+
+      // Verificar que todas las respuestas sean exitosas
+      for (const response of responses) {
+        if (!response.ok) {
+          throw new Error('Error loading recipes');
+        }
       }
 
-      const data = await response.json();
-      setAllRecipes(data.results || []);
-      setFilteredRecipes(data.results || []);
+      const data = await Promise.all(responses.map(r => r.json()));
+
+      // Combinar todos los resultados
+      const allRecipesData = [
+        ...(data[0].results || []),
+        ...(data[1].results || []),
+        ...(data[2].results || [])
+      ];
+
+      setAllRecipes(allRecipesData);
+      setFilteredRecipes(allRecipesData);
     } catch (err) {
       setError(err.message);
       setAllRecipes([]);

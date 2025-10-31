@@ -10,7 +10,7 @@ exports.handler = async (event) => {
     };
   }
 
-  const { query = '', number = 20 } = event.queryStringParameters || {};
+  const { query = '', number = 20, offset = 0 } = event.queryStringParameters || {};
 
   // Validar que hay una query
   if (!query) {
@@ -35,6 +35,7 @@ exports.handler = async (event) => {
     const url = new URL('https://api.spoonacular.com/recipes/complexSearch');
     url.searchParams.append('query', query);
     url.searchParams.append('number', number);
+    url.searchParams.append('offset', offset);
     url.searchParams.append('diet', 'vegan');
     url.searchParams.append('addRecipeInformation', 'true');
     url.searchParams.append('fillIngredients', 'true');
