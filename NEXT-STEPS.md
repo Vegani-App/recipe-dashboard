@@ -52,7 +52,8 @@ netlify deploy --prod
 3. Click "Add a variable"
 4. Add:
    - **Key**: `SPOONACULAR_API_KEY`
-   - **Value**: `4861a1c88533447d98231d89f094135a`
+   - **Value**: `your_spoonacular_api_key`
+   - Mark as "Contains secret values"
 5. Click "Create variable"
 6. Redeploy: "Deploys" > "Trigger deploy" > "Deploy site"
 

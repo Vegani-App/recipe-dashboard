@@ -40,7 +40,7 @@ npm install
 Create a `.env` file in the project root:
 
 ```env
-SPOONACULAR_API_KEY=4861a1c88533447d98231d89f094135a
+SPOONACULAR_API_KEY=your_api_key_here
 ```
 
 3. **Run in development**
@@ -75,7 +75,8 @@ The dashboard will be available at `http://localhost:5173`
 - In Netlify dashboard, go to: Site settings > Environment variables
 - Add the variable:
   - Key: `SPOONACULAR_API_KEY`
-  - Value: `4861a1c88533447d98231d89f094135a`
+  - Value: `your_spoonacular_api_key`
+  - Mark as "Contains secret values"
 - Save and redeploy the site
 
 ### Option B: Deploy with Netlify CLI
