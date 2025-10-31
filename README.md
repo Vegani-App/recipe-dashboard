@@ -1,93 +1,87 @@
 # VeganMaps Featured Recipes Dashboard
 
-Dashboard web para gestionar las 3 recetas destacadas que aparecen en la app VeganMaps.
+Web dashboard to manage the 3 featured recipes that appear in the VeganMaps app.
 
-## Características
+## Features
 
-- Búsqueda de recetas veganas en Spoonacular API
-- Selección visual de hasta 3 recetas
-- Publicación automática a la app iOS
-- Almacenamiento en Netlify Blobs (gratis)
-- Interfaz responsive y moderna
+- Search for vegan recipes in Spoonacular API
+- Visual selection of up to 3 recipes
+- Automatic publishing to iOS app
+- Storage in Netlify Blobs (free)
+- Responsive and modern interface
 
-## Tecnologías
+## Technologies
 
 - **Frontend**: React + Vite
 - **Backend**: Netlify Functions (serverless)
-- **Almacenamiento**: Netlify Blobs
+- **Storage**: Netlify Blobs
 - **Hosting**: Netlify
 - **API**: Spoonacular
 
-## Instalación Local
+## Local Installation
 
-### Prerequisitos
+### Prerequisites
 
 - Node.js 18+
-- npm o yarn
-- Cuenta en Netlify
+- npm or yarn
+- Netlify account
 
-### Pasos
+### Steps
 
-1. **Instalar dependencias**
+1. **Install dependencies**
 
 ```bash
 cd veganmaps-featured-dashboard
 npm install
 ```
 
-2. **Configurar variables de entorno**
+2. **Configure environment variables**
 
-Crea un archivo `.env` en la raíz del proyecto:
+Create a `.env` file in the project root:
 
 ```env
 SPOONACULAR_API_KEY=4861a1c88533447d98231d89f094135a
 ```
 
-3. **Ejecutar en desarrollo**
+3. **Run in development**
 
 ```bash
 npm run dev
 ```
 
-El dashboard estará disponible en `http://localhost:5173`
+The dashboard will be available at `http://localhost:5173`
 
-## Deployment en Netlify
+## Deployment on Netlify
 
-### Opción A: Deploy desde GitHub (Recomendado)
+### Option A: Deploy from GitHub (Recommended)
 
-1. **Crear repositorio en GitHub**
+1. **Create GitHub repository**
 
-```bash
-cd veganmaps-featured-dashboard
-git init
-git add .
-git commit -m "Initial commit: VeganMaps Featured Dashboard"
-gh repo create veganmaps-featured-dashboard --public --source=. --push
-```
+✅ **DONE** - Repository: https://github.com/Vegani-App/recipe-dashboard
 
-2. **Conectar con Netlify**
+2. **Connect with Netlify**
 
-- Ve a https://app.netlify.com/
-- Click en "Add new site" > "Import an existing project"
-- Conecta tu cuenta de GitHub
-- Selecciona el repo `veganmaps-featured-dashboard`
-- Configuración de build:
+- Go to https://app.netlify.com/
+- Click "Add new site" > "Import an existing project"
+- Connect your GitHub account
+- Select the `Vegani-App/recipe-dashboard` repo
+- Build configuration:
   - Build command: `npm run build`
   - Publish directory: `dist`
-- Click en "Deploy site"
+- Click "Deploy site"
 
-3. **Configurar variables de entorno en Netlify**
+3. **Configure environment variables in Netlify**
 
-- En el dashboard de Netlify, ve a: Site settings > Environment variables
-- Agrega la variable:
+- In Netlify dashboard, go to: Site settings > Environment variables
+- Add the variable:
   - Key: `SPOONACULAR_API_KEY`
   - Value: `4861a1c88533447d98231d89f094135a`
-- Guarda y redeploy el sitio
+- Save and redeploy the site
 
-### Opción B: Deploy con Netlify CLI
+### Option B: Deploy with Netlify CLI
 
 ```bash
-# Instalar Netlify CLI
+# Install Netlify CLI
 npm install -g netlify-cli
 
 # Login
@@ -97,74 +91,74 @@ netlify login
 netlify deploy --prod
 ```
 
-## Configurar la App iOS
+## Configure iOS App
 
-Una vez deployado el dashboard, necesitas actualizar la URL en el código iOS:
+Once the dashboard is deployed, you need to update the URL in the iOS code:
 
-1. Abre el archivo: `Vegan Restaurants/Classes/Models/Services/FeaturedRecipesService.swift`
+1. Open file: `Vegan Restaurants/Classes/Models/Services/FeaturedRecipesService.swift`
 
-2. Reemplaza la URL en la línea 27:
+2. Replace the URL on line 27:
 
 ```swift
-// Antes:
+// Before:
 private let netlifyFunctionURL = "https://YOUR-NETLIFY-SITE.netlify.app/.netlify/functions/get-featured"
 
-// Después (reemplaza con tu URL real):
+// After (replace with your real URL):
 private let netlifyFunctionURL = "https://veganmaps-dashboard.netlify.app/.netlify/functions/get-featured"
 ```
 
-3. Guarda el archivo y compila la app
+3. Save the file and build the app
 
-## Uso del Dashboard
+## Dashboard Usage
 
-### Para tu clienta:
+### For your client:
 
-1. **Acceder al dashboard**
-   - URL: `https://tu-sitio.netlify.app`
+1. **Access the dashboard**
+   - URL: `https://your-site.netlify.app`
 
-2. **Buscar recetas**
-   - Escribir término de búsqueda (ej: "tacos", "pasta", "curry")
-   - Click en "Buscar"
-   - Se mostrarán hasta 20 recetas veganas
+2. **Search recipes**
+   - Type search term (e.g., "tacos", "pasta", "curry")
+   - Click "Search"
+   - Up to 20 vegan recipes will be displayed
 
-3. **Seleccionar recetas**
-   - Click en las recetas que quieras destacar
-   - Selecciona exactamente 3 recetas
-   - Las recetas seleccionadas aparecerán en el panel derecho
+3. **Select recipes**
+   - Click on the recipes you want to feature
+   - Select exactly 3 recipes
+   - Selected recipes will appear in the right panel
 
-4. **Publicar**
-   - Una vez seleccionadas las 3 recetas, click en "Publicar en la App"
-   - Mensaje de confirmación: "¡Recetas publicadas exitosamente!"
-   - La app se actualizará automáticamente
+4. **Publish**
+   - Once 3 recipes are selected, click "Publish to App"
+   - Confirmation message: "Recipes published successfully!"
+   - The app will update automatically
 
-## Arquitectura
+## Architecture
 
 ```
 Dashboard React (Netlify)
    ↓
-   Llama a: /.netlify/functions/search-recipes
+   Calls: /.netlify/functions/search-recipes
    ↓
-Netlify Function → Spoonacular API (con API key segura)
+Netlify Function → Spoonacular API (with secure API key)
    ↓
-   Devuelve resultados al Dashboard
+   Returns results to Dashboard
    ↓
-   Usuario selecciona 3 recetas
+   User selects 3 recipes
    ↓
-   Dashboard llama a: /.netlify/functions/save-featured
+   Dashboard calls: /.netlify/functions/save-featured
    ↓
-   Se guarda en Netlify Blobs
+   Saved in Netlify Blobs
    ↓
-App iOS lee de: /.netlify/functions/get-featured
+iOS App reads from: /.netlify/functions/get-featured
 ```
 
 ## Endpoints
 
-### 1. Búsqueda de recetas (privado - solo desde dashboard)
+### 1. Search recipes (private - only from dashboard)
 ```
 GET /.netlify/functions/search-recipes?query=tacos&number=20
 ```
 
-### 2. Guardar recetas featured (privado - solo desde dashboard)
+### 2. Save featured recipes (private - only from dashboard)
 ```
 POST /.netlify/functions/save-featured
 Body: [
@@ -179,7 +173,7 @@ Body: [
 ]
 ```
 
-### 3. Obtener recetas featured (público - usado por app iOS)
+### 3. Get featured recipes (public - used by iOS app)
 ```
 GET /.netlify/functions/get-featured
 
@@ -189,24 +183,24 @@ Response: {
 }
 ```
 
-## Costos
+## Costs
 
-Todo es **GRATIS** para tu caso de uso:
+Everything is **FREE** for your use case:
 
-- **Netlify Hosting**: Gratis (100GB bandwidth/mes)
-- **Netlify Functions**: Gratis (125k invocaciones/mes)
-- **Netlify Blobs**: Gratis (100GB storage, 1M lecturas/mes)
-- **Spoonacular API**: Depende de tu plan actual
+- **Netlify Hosting**: Free (100GB bandwidth/month)
+- **Netlify Functions**: Free (125k invocations/month)
+- **Netlify Blobs**: Free (100GB storage, 1M reads/month)
+- **Spoonacular API**: Depends on your current plan
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 veganmaps-featured-dashboard/
 ├── netlify/
 │   └── functions/
-│       ├── search-recipes.js    # Proxy a Spoonacular
-│       ├── save-featured.js     # Guardar en Netlify Blobs
-│       └── get-featured.js      # Endpoint para iOS
+│       ├── search-recipes.js    # Proxy to Spoonacular
+│       ├── save-featured.js     # Save to Netlify Blobs
+│       └── get-featured.js      # Endpoint for iOS
 ├── src/
 │   ├── components/
 │   │   ├── SearchBar.jsx
@@ -224,25 +218,25 @@ veganmaps-featured-dashboard/
 └── README.md
 ```
 
-## Solución de Problemas
+## Troubleshooting
 
-### El dashboard no muestra recetas
-- Verifica que la variable de entorno `SPOONACULAR_API_KEY` esté configurada en Netlify
-- Revisa los logs en: Netlify Dashboard > Functions
+### Dashboard doesn't show recipes
+- Verify that `SPOONACULAR_API_KEY` environment variable is configured in Netlify
+- Check logs in: Netlify Dashboard > Functions
 
-### La app iOS no carga las recetas featured
-- Verifica que la URL en `FeaturedRecipesService.swift` sea correcta
-- Prueba el endpoint en el navegador: `https://tu-sitio.netlify.app/.netlify/functions/get-featured`
-- Debe devolver JSON con la estructura correcta
+### iOS app doesn't load featured recipes
+- Verify the URL in `FeaturedRecipesService.swift` is correct
+- Test the endpoint in browser: `https://your-site.netlify.app/.netlify/functions/get-featured`
+- Should return JSON with correct structure
 
-### Error al publicar recetas
-- Verifica que hayas seleccionado exactamente 3 recetas
-- Revisa la consola del navegador (F12) para ver errores
+### Error when publishing recipes
+- Verify you selected exactly 3 recipes
+- Check browser console (F12) for errors
 
-## Soporte
+## Support
 
-Para reportar bugs o pedir ayuda, contacta al desarrollador.
+To report bugs or request help, contact the developer.
 
-## Licencia
+## License
 
-Uso privado para VeganMaps.
+Private use for VeganMaps.
