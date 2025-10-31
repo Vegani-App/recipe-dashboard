@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './RecipeCard.css';
 
 function RecipeCard({ recipe, isSelected, onSelect }) {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <div
       className={`recipe-card ${isSelected ? 'selected' : ''}`}
       onClick={() => onSelect(recipe)}
     >
       <div className="recipe-image-container">
-        <img
-          src={recipe.image}
-          alt={recipe.title}
-          className="recipe-image"
-        />
+        {imageError ? (
+          <div className="recipe-image-placeholder">
+            <span className="placeholder-icon">🥗</span>
+            <span className="placeholder-text">No image</span>
+          </div>
+        ) : (
+          <img
+            src={recipe.image}
+            alt={recipe.title}
+            className="recipe-image"
+            onError={() => setImageError(true)}
+          />
+        )}
         {isSelected && (
           <div className="selected-badge">
             ✓ Selected
